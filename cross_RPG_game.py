@@ -80,6 +80,8 @@ while not is_game_over:
 	# tick the clock to update everything within game
 	clock.tick(TICK_RATE)
 
+# End of game loop
+
 # quit pygame and pgrm
 pygame.quit()
 quit()
