@@ -40,6 +40,7 @@ class Game:
 		# The loop gives the game continuity
 		# until game is over.
 		is_game_over = False
+		direction = 0
 
 		while not is_game_over:
 
@@ -49,6 +50,24 @@ class Game:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					is_game_over = True
+				
+				# Detect if any key is pressed down
+				elif event.type == pygame.KEYDOWN:
+					
+					# Traverse up if up key is pressed
+					if event.key == pygame.K_UP:
+						direction = 1
+
+					# Traverse down if down key is pressed
+					elif event.key == pygame.K_DOWN:
+						direction = -1
+
+				# Detect if a key is released
+				elif event.type == pygame.KEYUP:
+					
+					# stop moving if key is released
+					if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+						direction = 0
 				print(event)
 
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -68,18 +87,62 @@ class Game:
 			# tick the clock to update everything within game
 			clock.tick(self.TICK_RATE)
 
+class GameObject:
+
+		def __init__(self, image_path, x, y, width, height):
+			# load a sprite 
+			object_image = pygame.image.load(image_path)
+			
+			# Scale image up 
+			self.image = pygame.transform.scale(object_image, (width,height))
+			
+			self.x_pos = x
+			self.y_pos = y
+			self.width = width
+			self.height = height
+
+		# Draw the game object by blitting
+		def draw(self, background):
+			background.blit(self.image, (self.x_pos, self.y_pos))
+
+# class for a playable character in game
+class Player(GameObject):
+
+		# speed at which the character will move
+		SPEED = 10
+
+		def __init__(self, image_path, x, y, width, height):
+			super().__init__(image_path, x, y, width, height)
+
+		# direction = is the player moving up or down?
+		def move(self, direction):
+			# if the direction is greater than 0
+			# move up
+			if direction > 0:
+				self.y_pos -= SPEED
+			
+			# if greater than 0
+			#move down
+			elif direction < 0:
+				self.x_pos += SPEED
 
 
-# need to initialize pygame
-# in order to use any of its
-# methods.
+			
+
+
+
+
+
+
+
+
+# initialize pygame
+# to use any of its methods.
 pygame.init()
 
 new_game = Game(SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
 new_game.run_game_loop()
 
-
-# End of game loop
 
 # quit pygame and pgrm
 pygame.quit()
