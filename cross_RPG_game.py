@@ -42,6 +42,8 @@ class Game:
 		is_game_over = False
 		direction = 0
 
+		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
+
 		while not is_game_over:
 
 			# a loop that gets all of the events
@@ -70,6 +72,15 @@ class Game:
 						direction = 0
 				print(event)
 
+			#redraw screen
+			self.game_screen.fill(AQUA_COLOR)
+
+			# update character positioning
+			player_character.move(direction)
+			
+			# draw character at new position
+			player_character.draw(self.game_screen)
+
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 			# inserting sprite in game window.
 			# we will use blit to complete this
@@ -89,44 +100,42 @@ class Game:
 
 class GameObject:
 
-		def __init__(self, image_path, x, y, width, height):
-			# load a sprite 
-			object_image = pygame.image.load(image_path)
-			
-			# Scale image up 
-			self.image = pygame.transform.scale(object_image, (width,height))
-			
-			self.x_pos = x
-			self.y_pos = y
-			self.width = width
-			self.height = height
+	def __init__(self, image_path, x, y, width, height):
+		# load a sprite 
+		object_image = pygame.image.load(image_path)
+		
+		# Scale image up 
+		self.image = pygame.transform.scale(object_image, (width,height))
+		
+		self.x_pos = x
+		self.y_pos = y
+		self.width = width
+		self.height = height
 
-		# Draw the game object by blitting
-		def draw(self, background):
-			background.blit(self.image, (self.x_pos, self.y_pos))
+	# Draw the game object by blitting
+	def draw(self, background):
+		background.blit(self.image, (self.x_pos, self.y_pos))
 
 # class for a playable character in game
-class Player(GameObject):
+class PlayerCharacter(GameObject):
 
-		# speed at which the character will move
-		SPEED = 10
+	# speed at which the character will move
+	SPEED = 10
 
-		def __init__(self, image_path, x, y, width, height):
-			super().__init__(image_path, x, y, width, height)
+	def __init__(self, image_path, x, y, width, height):
+		super().__init__(image_path, x, y, width, height)
 
-		# direction = is the player moving up or down?
-		def move(self, direction):
-			# if the direction is greater than 0
-			# move up
-			if direction > 0:
-				self.y_pos -= SPEED
-			
-			# if greater than 0
-			#move down
-			elif direction < 0:
-				self.x_pos += SPEED
-
-
+	# direction = is the player moving up or down?
+	def move(self, direction):
+		# if the direction is greater than 0
+		# move up
+		if direction > 0 and self.y_pos > 0:
+			self.y_pos -= self.SPEED
+		
+		# if greater than 0
+		#move down
+		elif direction < 0 and self.y_pos < 700:
+			self.y_pos += self.SPEED
 			
 
 
