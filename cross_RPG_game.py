@@ -129,7 +129,7 @@ class PlayerCharacter(GameObject):
 	def move(self, direction):
 		# if the direction is greater than 0
 		# move up
-		# if y_pos is greater less than 0, stop.
+		# if y_pos is greater than 0, stop.
 		if direction > 0 and self.y_pos > 0:
 			self.y_pos -= self.SPEED
 		
