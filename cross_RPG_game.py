@@ -84,6 +84,13 @@ class Game:
 			enemy_character.move(self.width)
 			enemy_character.draw(self.game_screen)
 
+			# Collision detection
+			if (enemy_character.y_pos >= player_character.y_pos-50) and (enemy_character.y_pos <= player_character.y_pos+50):
+				if (enemy_character.x_pos >= player_character.x_pos-50) and (enemy_character.x_pos <= player_character.x_pos+50):
+					is_game_over = True
+
+			print ("enemy position", enemy_character.x_pos, enemy_character.y_pos)
+
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 			# inserting sprite in game window.
 			# we will use blit to complete this
