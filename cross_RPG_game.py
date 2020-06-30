@@ -43,6 +43,7 @@ class Game:
 		direction = 0
 
 		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
+		enemy_character = EnemyCharacter('images/enemy.png', 200, 700, 50, 50)
 
 		while not is_game_over:
 
@@ -75,11 +76,13 @@ class Game:
 			#redraw screen
 			self.game_screen.fill(AQUA_COLOR)
 
-			# update character positioning
+			# update and draw character positioning
 			player_character.move(direction)
-			
-			# draw character at new position
 			player_character.draw(self.game_screen)
+
+			#update and draw enemy positioning
+			enemy_character.move(self.width)
+			enemy_character.draw(self.game_screen)
 
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 			# inserting sprite in game window.
@@ -130,7 +133,7 @@ class PlayerCharacter(GameObject):
 		# if the direction is greater than 0
 		# move up
 		# if y_pos is less than 0, stop.
-		if direction > 0 and self.y_pos > 0:
+		if direction > 0 and self.y_pos > 20:
 			self.y_pos -= self.SPEED
 		
 		# if greater than 0
@@ -139,8 +142,28 @@ class PlayerCharacter(GameObject):
 		elif direction < 0 and self.y_pos < 700:
 			self.y_pos += self.SPEED
 			
+class EnemyCharacter(GameObject):
 
+	# speed at which the character will move
+	SPEED = 10
 
+	def __init__(self, image_path, x, y, width, height):
+		super().__init__(image_path, x, y, width, height)
+
+	# Enemy will be moving left and right
+	def move(self, max_width):
+
+		# if the enemy is at the far left bound
+		# change directions
+		if self.x_pos <= 20:
+			self.SPEED = abs(self.SPEED)
+
+		elif self.x_pos >= max_width - 50:
+			self.SPEED = -abs(self.SPEED)
+
+		self.x_pos += self.SPEED
+
+		
 
 
 
