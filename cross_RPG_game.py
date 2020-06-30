@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 
 class Game:
 	# clock & frames per second 
-	TICK_RATE = 5
+	TICK_RATE = 60
 
 	def __init__(self, title, width, height):
 		self.title = title
@@ -44,7 +44,7 @@ class Game:
 
 		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
 		enemy_character = EnemyCharacter('images/enemy.png', 20, 400, 50, 50)
-		
+
 
 		while not is_game_over:
 
@@ -85,27 +85,11 @@ class Game:
 			enemy_character.move(self.width)
 			enemy_character.draw(self.game_screen)
 			
+			# Check collision with enemy
 			if player_character.detectCollision(enemy_character):
 				is_game_over = True
-			"""
-			# Collision detection
-			if (self.y_pos >= other_object.y_pos-50) and (self.y_pos <= other_object.y_pos+50):
-				if (self.x_pos >= other_object.x_pos-50) and (self.x_pos <= other_object.x_pos+50):
-					is_game_over = True
+			
 
-			print ("enemy position", self.x_pos, self.y_pos)
-			"""
-
-		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-			# inserting sprite in game window.
-			# we will use blit to complete this
-			# blit(source_image, destination, area=None, special_flags = 0)
-			# only concearned about source & destination, disregard the
-			# other parameters.
-			#game_screen.blit(player_image, (375,375))
-
-
-		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 			# rendering
 			# this updates the graphics in the game
 			pygame.display.update()
@@ -131,6 +115,7 @@ class GameObject:
 	def draw(self, background):
 		background.blit(self.image, (self.x_pos, self.y_pos))
 
+	
 	def detectCollision(self, other_object):
 		if (self.y_pos >= other_object.y_pos - other_object.height) and (self.y_pos <= other_object.y_pos + other_object.height):
 				if (self.x_pos >= other_object.x_pos - other_object.width) and (self.x_pos <= other_object.x_pos + other_object.width):
