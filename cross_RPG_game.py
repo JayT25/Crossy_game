@@ -17,11 +17,16 @@ BLACK_COLOR = (0, 0, 0)
 # clock
 clock = pygame.time.Clock()
 
+# initialize font
+pygame.font.init()
+font = pygame.font.SysFont('comicsans', 75)
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 class Game:
 	# clock & frames per second 
 	TICK_RATE = 60
 
-	def __init__(self, title, width, height):
+	def __init__(self, image_path, title, width, height):
 		self.title = title
 		self.width = width
 		self.height = height
@@ -35,11 +40,20 @@ class Game:
 		# display screen title
 		pygame.display.set_caption(SCREEN_TITLE)
 
+		# load the image from path 
+		background_image = pygame.image.load(image_path)
+
+		# scale up the background image
+		# to game screen width & height 
+		self.image = pygame.transform.scale(background_image, (width, height))
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 	
+
 	def run_game_loop(self):
 		# Game loop
 		# The loop gives the game continuity
 		# until game is over.
 		is_game_over = False
+		did_win = False
 		direction = 0
 
 		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
@@ -77,6 +91,8 @@ class Game:
 
 			#redraw screen
 			self.game_screen.fill(AQUA_COLOR)
+			# blit background image to screen
+			self.game_screen.blit(self.image, (0,0))
 
 			# draw treasure
 			treasure.draw(self.game_screen)
@@ -90,16 +106,43 @@ class Game:
 			enemy_character.draw(self.game_screen)
 			
 			# Check collision with enemy
-			# game over if true
+			# game over if true, player lost
 			if player_character.detectCollision(enemy_character):
 				is_game_over = True
+				did_win = False
+				
+				# Render game over display text after lost
+				text = font.render('GAME OVER!', True, ORANGE_COLOR)
+				
+				# blit it to game_screen
+				self.game_screen.blit(text, (300, 350))
+				
+				# update display to show text
+				pygame.display.update()
+				
+				# wait a second
+				clock.tick(1)
+				break
 
 			# Check collision with treasure
 			# player wins, game over
 			elif player_character.detectCollision(treasure):
-				print("YOU WON !")
 				is_game_over = True
-			
+				did_win = True
+
+				# Render game over display text after lost
+				text = font.render('YOU WON!', True, ORANGE_COLOR)
+				
+				# blit it to game_screen
+				self.game_screen.blit(text, (300, 350))
+				
+				# update display to show text
+				pygame.display.update()
+				
+				# wait a second
+				clock.tick(1)
+				break
+
 
 			# rendering
 			# this updates the graphics in the game
@@ -107,6 +150,14 @@ class Game:
 			
 			# tick the clock to update everything within game
 			clock.tick(self.TICK_RATE)
+
+		# if player wins, allow the player to
+		# play again. else, exit game.
+		if did_win:
+			self.run_game_loop()
+		else:
+			return
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 class GameObject:
 
@@ -121,17 +172,18 @@ class GameObject:
 		self.y_pos = y
 		self.width = width
 		self.height = height
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+	
 	# Draw the game object by blitting
 	def draw(self, background):
 		background.blit(self.image, (self.x_pos, self.y_pos))
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #	
 	
 	def detectCollision(self, other_object):
 		if (self.y_pos >= other_object.y_pos - other_object.height) and (self.y_pos <= other_object.y_pos + other_object.height):
 				if (self.x_pos >= other_object.x_pos - other_object.width) and (self.x_pos <= other_object.x_pos + other_object.width):
 					return True
-
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # class for a playable character in game
 class PlayerCharacter(GameObject):
@@ -141,6 +193,7 @@ class PlayerCharacter(GameObject):
 
 	def __init__(self, image_path, x, y, width, height):
 		super().__init__(image_path, x, y, width, height)
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 	# direction = is the player moving up or down?
 	def move(self, direction):
@@ -149,13 +202,14 @@ class PlayerCharacter(GameObject):
 		# if y_pos is less than 0, stop.
 		if direction > 0 and self.y_pos > 20:
 			self.y_pos -= self.SPEED
-		
+
 		# if greater than 0
 		# move down
 		# if y_pos is greater than 700 stop.
 		elif direction < 0 and self.y_pos < 700:
 			self.y_pos += self.SPEED
-			
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 class EnemyCharacter(GameObject):
 
 	# speed at which the character will move
@@ -163,6 +217,7 @@ class EnemyCharacter(GameObject):
 
 	def __init__(self, image_path, x, y, width, height):
 		super().__init__(image_path, x, y, width, height)
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 	# Enemy will be moving left and right
 	def move(self, max_width):
@@ -176,6 +231,7 @@ class EnemyCharacter(GameObject):
 			self.SPEED = -abs(self.SPEED)
 
 		self.x_pos += self.SPEED
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 		
 
@@ -188,7 +244,7 @@ class EnemyCharacter(GameObject):
 # to use any of its methods.
 pygame.init()
 
-new_game = Game(SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
+new_game = Game('images/background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
 new_game.run_game_loop()
 
 
