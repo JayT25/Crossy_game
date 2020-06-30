@@ -43,7 +43,7 @@ class Game:
 		direction = 0
 
 		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
-		enemy_character = EnemyCharacter('images/enemy.png', 200, 700, 50, 50)
+		enemy_character = EnemyCharacter('images/enemy.png', 20, 400, 50, 50)
 
 		while not is_game_over:
 
