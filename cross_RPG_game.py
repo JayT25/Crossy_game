@@ -90,9 +90,12 @@ class Game:
 			enemy_character.draw(self.game_screen)
 			
 			# Check collision with enemy
+			# game over if true
 			if player_character.detectCollision(enemy_character):
 				is_game_over = True
 
+			# Check collision with treasure
+			# player wins, game over
 			elif player_character.detectCollision(treasure):
 				print("YOU WON !")
 				is_game_over = True
