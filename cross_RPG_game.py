@@ -44,6 +44,7 @@ class Game:
 
 		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
 		enemy_character = EnemyCharacter('images/enemy.png', 20, 400, 50, 50)
+		treasure = GameObject('images/treasure.png', 375, 50, 50, 50)
 
 
 		while not is_game_over:
@@ -77,6 +78,9 @@ class Game:
 			#redraw screen
 			self.game_screen.fill(AQUA_COLOR)
 
+			# draw treasure
+			treasure.draw(self.game_screen)
+
 			# update and draw character positioning
 			player_character.move(direction)
 			player_character.draw(self.game_screen)
@@ -87,6 +91,10 @@ class Game:
 			
 			# Check collision with enemy
 			if player_character.detectCollision(enemy_character):
+				is_game_over = True
+
+			elif player_character.detectCollision(treasure):
+				print("YOU WON !")
 				is_game_over = True
 			
 
