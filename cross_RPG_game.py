@@ -55,14 +55,22 @@ class Game:
 		is_game_over = False
 		did_win = False
 		direction = 0
+		enemy_count = 3
 
 		player_character = PlayerCharacter ('images/player.png', 375, 700, 50, 50)
-		enemy_character = EnemyCharacter('images/enemy.png', 20, 400, 50, 50)
+		
+		enemies = []
+		
+		enemies.append(EnemyCharacter('images/enemy.png', 120, 250, 50, 50))
+		enemies.append(EnemyCharacter('images/enemy.png', 170, 400, 50, 50))
+		enemies.append(EnemyCharacter('images/enemy.png', 220, 550, 50, 50))
+		
+		
 		treasure = GameObject('images/treasure.png', 375, 50, 50, 50)
+		
 
 
-		while not is_game_over:
-
+		while not is_game_over:			
 			# a loop that gets all of the events
 			# currently taking place. 
 			# mouse moving/clicks, keystrokes, etc..
@@ -102,31 +110,34 @@ class Game:
 			player_character.draw(self.game_screen)
 
 			#update and draw enemy positioning
-			enemy_character.move(self.width)
-			enemy_character.draw(self.game_screen)
+			for x in range(enemy_count):
+				enemies[x].move(self.width)
+				enemies[x].draw(self.game_screen)
+			#enemy_character.move(self.width)
+			#enemy_character.draw(self.game_screen)
 			
-			# Check collision with enemy
-			# game over if true, player lost
-			if player_character.detectCollision(enemy_character):
-				is_game_over = True
-				did_win = False
-				
-				# Render game over display text after lost
-				text = font.render('GAME OVER!', True, ORANGE_COLOR)
-				
-				# blit it to game_screen
-				self.game_screen.blit(text, (300, 350))
-				
-				# update display to show text
-				pygame.display.update()
-				
-				# wait a second
-				clock.tick(1)
-				break
+				# Check collision with enemy
+				# game over if true, player lost
+				if player_character.detectCollision(enemies[x]):
+					is_game_over = True
+					did_win = False
+					
+					# Render game over display text after lost
+					text = font.render('GAME OVER!', True, ORANGE_COLOR)
+					
+					# blit it to game_screen
+					self.game_screen.blit(text, (300, 350))
+					
+					# update display to show text
+					pygame.display.update()
+					
+					# wait a second
+					clock.tick(1)
+					break
 
 			# Check collision with treasure
 			# player wins, game over
-			elif player_character.detectCollision(treasure):
+			if player_character.detectCollision(treasure):
 				is_game_over = True
 				did_win = True
 
@@ -134,7 +145,7 @@ class Game:
 				text = font.render('YOU WON!', True, ORANGE_COLOR)
 				
 				# blit it to game_screen
-				self.game_screen.blit(text, (300, 350))
+				self.game_screen.blit(text, (275, 350))
 				
 				# update display to show text
 				pygame.display.update()
@@ -155,6 +166,7 @@ class Game:
 		# play again. else, exit game.
 		if did_win:
 			self.run_game_loop()
+			
 		else:
 			return
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -180,8 +192,8 @@ class GameObject:
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #	
 	
 	def detectCollision(self, other_object):
-		if (self.y_pos >= other_object.y_pos - other_object.height) and (self.y_pos <= other_object.y_pos + other_object.height):
-				if (self.x_pos >= other_object.x_pos - other_object.width) and (self.x_pos <= other_object.x_pos + other_object.width):
+		if (self.y_pos >= other_object.y_pos - other_object.height/1.5) and (self.y_pos <= other_object.y_pos + other_object.height/1.5):
+				if (self.x_pos >= other_object.x_pos - other_object.width/1.5) and (self.x_pos <= other_object.x_pos + other_object.width/1.5):
 					return True
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -213,7 +225,7 @@ class PlayerCharacter(GameObject):
 class EnemyCharacter(GameObject):
 
 	# speed at which the character will move
-	SPEED = 10
+	SPEED = 20
 
 	def __init__(self, image_path, x, y, width, height):
 		super().__init__(image_path, x, y, width, height)
