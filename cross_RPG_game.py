@@ -48,7 +48,7 @@ class Game:
 		self.image = pygame.transform.scale(background_image, (width, height))
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 	
 
-	def run_game_loop(self):
+	def run_game_loop(self, level_speed):
 		# Game loop
 		# The loop gives the game continuity
 		# until game is over.
@@ -61,9 +61,12 @@ class Game:
 		
 		enemies = []
 		
-		enemies.append(EnemyCharacter('images/enemy.png', 120, 250, 50, 50))
-		enemies.append(EnemyCharacter('images/enemy.png', 170, 400, 50, 50))
-		enemies.append(EnemyCharacter('images/enemy.png', 220, 550, 50, 50))
+		enemies.append(EnemyCharacter('images/enemy.png', 120, 600, 50, 50))
+		enemies.append(EnemyCharacter('images/enemy.png', self.width -40, 400, 50, 50))
+		enemies.append(EnemyCharacter('images/enemy.png', 220, 200, 50, 50))
+		
+		for x in range(len(enemies)):
+			enemies[x].SPEED *= level_speed
 		
 		
 		treasure = GameObject('images/treasure.png', 375, 50, 50, 50)
@@ -165,7 +168,7 @@ class Game:
 		# if player wins, allow the player to
 		# play again. else, exit game.
 		if did_win:
-			self.run_game_loop()
+			self.run_game_loop(level_speed+0.5)
 			
 		else:
 			return
@@ -225,7 +228,7 @@ class PlayerCharacter(GameObject):
 class EnemyCharacter(GameObject):
 
 	# speed at which the character will move
-	SPEED = 20
+	SPEED = 10
 
 	def __init__(self, image_path, x, y, width, height):
 		super().__init__(image_path, x, y, width, height)
@@ -257,7 +260,7 @@ class EnemyCharacter(GameObject):
 pygame.init()
 
 new_game = Game('images/background.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT)
-new_game.run_game_loop()
+new_game.run_game_loop(1)
 
 
 # quit pygame and pgrm
